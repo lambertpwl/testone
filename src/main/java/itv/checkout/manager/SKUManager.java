@@ -3,13 +3,16 @@ package itv.checkout.manager;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import itv.checkout.bean.SKU;
 
 @Component
 public class SKUManager {
-
+	private final Logger logger = LoggerFactory.getLogger(SKUManager.class);
+	
 	private HashMap<String, SKU> skuMap;
 	
 	public SKUManager() {
@@ -27,10 +30,21 @@ public class SKUManager {
 	}
 
 	public SKU getSKU(String name) {
-		return (skuMap != null ? skuMap.get(name) : null);
+		SKU sku = null;
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("START getSKU()");
+    	}
+		sku = (skuMap != null ? skuMap.get(name) : null);
+		if (logger.isDebugEnabled()) {
+			logger.debug("END getSKU(sku=" + sku + ")");
+		}
+		return sku;
 	}
 
 	public boolean updateSKU(SKU sku, boolean updateUnitPrice, boolean updateOffer) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("START updateSKU(sku=" + sku + ", updateUnitPrice=" + updateUnitPrice + ", updateOffer=" + updateOffer + ")");
+		}
 		boolean updated = false;
 		// Ensure the map exists
 		if (skuMap == null) {
@@ -47,10 +61,23 @@ public class SKUManager {
 			skuMap.put(sku.getName(), sku);
 			updated = true;
 		}
+		if (logger.isDebugEnabled()) {
+			logger.debug("END updateSKU(updated=" + updated + ")");
+		}
 		return updated;
 	}
 
 	public Map<String, SKU> getSKUMap() {
-		return skuMap;
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("START getSKUMap()");
+    	}
+    	try {
+    		return skuMap;
+	    } finally {
+    		if (logger.isDebugEnabled()) {
+    			logger.debug("END getSKUMap(skuMap=" + skuMap + ")");
+    		}
+    	}
+		
 	}
 }
