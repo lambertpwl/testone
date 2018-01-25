@@ -3,17 +3,19 @@ package itv.checkout.bean;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class CheckoutSession {
+	private int checkoutSessionId;
+	private boolean active;
 	private HashMap<SKU, Integer> items = null;
 	private int totalCost = 0;
-	private boolean active;
-		
-	public CheckoutSession() {}
+
+	public CheckoutSession(int checkoutSessionId) {
+		this.checkoutSessionId = checkoutSessionId;
+		setActive(true);
+	}
 	
 	public CheckoutSession(CheckoutSession checkoutSession) {
+		this.checkoutSessionId = checkoutSession.getCheckoutSessionId();
 		setItems((HashMap<SKU, Integer>)checkoutSession.getItems());
 		setTotalCost(checkoutSession.getTotalCost());
 		setActive(checkoutSession.isActive());
@@ -27,7 +29,6 @@ public class CheckoutSession {
 		Integer quantity = null;
 		if (items == null) {
 			items = new HashMap<>();
-			setActive(true);
 			quantity = 0;
 		} else {
 			quantity = (items.get(item) != null ? items.get(item) : 0);
@@ -54,13 +55,13 @@ public class CheckoutSession {
 	private void setTotalCost(int totalCost) {
 		this.totalCost = totalCost;
 	}
-
-	public int getTotalCost() {
-		return this.totalCost;
-	}
-
+	
 	private void setActive(boolean active) {
 		this.active = active;
+	}
+	
+	public int getCheckoutSessionId() {
+		return checkoutSessionId;
 	}
 	
 	public boolean isActive() {
@@ -76,7 +77,36 @@ public class CheckoutSession {
 	private void setItems(HashMap<SKU, Integer> items) {
 		this.items = items;
 	}
+	
+	public void checkout() {
+		setActive(false);
+	}
 
+	public int getTotalCost() {
+		return this.totalCost;
+	}
+	
+	public String getReceipt() {
+		StringBuilder receipt = new StringBuilder();
+		if (getItems() != null) {
+			
+			for (Map.Entry<SKU, Integer> item : items.entrySet()) {
+				for (int i=0; i < item.getValue(); i++) {
+					receipt.append((item.getKey().getName() + " - " + String.format("%.2f", (double)item.getKey().getUnitPrice() / 100)));
+					receipt.append(",");
+				}
+				if (item.getKey().isOnOffer()) {
+					for (int i=0; i < (item.getValue().intValue() / item.getKey().getOfferUnits()); i++) {
+						receipt.append("Offer " + item.getKey().getName() + " - " + item.getKey().getOfferUnits() + " @ " + String.format("%.2f", (double)item.getKey().getOfferPrice() / 100));
+						receipt.append(",");
+					}
+				} 
+			}
+			receipt.append("Total - " + String.format("%.2f", (double)this.getTotalCost() / 100));
+		}		
+		return receipt.toString();
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -86,7 +116,10 @@ public class CheckoutSession {
 		builder.append(totalCost);
 		builder.append(", active=");
 		builder.append(active);
+		builder.append(", checkoutSessionId=");
+		builder.append(checkoutSessionId);
 		builder.append("]");
 		return builder.toString();
 	}
+	
 }

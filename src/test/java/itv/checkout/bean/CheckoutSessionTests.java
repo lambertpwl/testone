@@ -16,7 +16,7 @@ public class CheckoutSessionTests {
 
 	@Test
 	public void testCheckoutSession() {
-		checkoutSession = new CheckoutSession();
+		checkoutSession = new CheckoutSession(1);
 		
 		assertThat(checkoutSession.getItems(), nullValue(null));
 		assertThat(checkoutSession.getTotalCost(), is(TestConstants.ZERO_VALUE));
@@ -25,7 +25,7 @@ public class CheckoutSessionTests {
 
 	@Test
 	public void testCheckoutSessionCopyConstructor() {
-		checkoutSession = new CheckoutSession();
+		checkoutSession = new CheckoutSession(1);
 		checkoutSession.addItem(new SKU(TestConstants.SKU_ITEM_NAME_A, TestConstants.SKU_ITEM_A_UNIT_PRICE));
 		assertThat(checkoutSession.getItems().size(), is(1));
 		assertThat(checkoutSession.getTotalCost(), is(TestConstants.SKU_ITEM_A_UNIT_PRICE));
@@ -39,7 +39,7 @@ public class CheckoutSessionTests {
 
 	@Test
 	public void testAddItems() {
-		checkoutSession = new CheckoutSession();
+		checkoutSession = new CheckoutSession(1);
 		checkoutSession.addItem(new SKU(TestConstants.SKU_ITEM_NAME_A, TestConstants.SKU_ITEM_A_UNIT_PRICE));
 		checkoutSession.addItem(new SKU(TestConstants.SKU_ITEM_NAME_B, TestConstants.SKU_ITEM_B_UNIT_PRICE));
 
@@ -50,7 +50,7 @@ public class CheckoutSessionTests {
 
 	@Test
 	public void testAddItemsToMatchOffer() {
-		checkoutSession = new CheckoutSession();
+		checkoutSession = new CheckoutSession(1);
 		SKU itemA = new SKU(TestConstants.SKU_ITEM_NAME_A, TestConstants.SKU_ITEM_A_UNIT_PRICE, TestConstants.SKU_ITEM_A_OFFER_UNITS, TestConstants.SKU_ITEM_A_OFFER_PRICE);
 		for (int i=0; i < TestConstants.SKU_ITEM_A_OFFER_UNITS; i++) {
 			checkoutSession.addItem(itemA);
@@ -63,7 +63,7 @@ public class CheckoutSessionTests {
 
 	@Test
 	public void testAddItemsToMatchOfferUnitsTwice() {
-		checkoutSession = new CheckoutSession();
+		checkoutSession = new CheckoutSession(1);
 		SKU itemA = new SKU(TestConstants.SKU_ITEM_NAME_A, TestConstants.SKU_ITEM_A_UNIT_PRICE, TestConstants.SKU_ITEM_A_OFFER_UNITS, TestConstants.SKU_ITEM_A_OFFER_PRICE);
 		for (int i=0; i < (TestConstants.SKU_ITEM_A_OFFER_UNITS * 2); i++) {
 			checkoutSession.addItem(itemA);
@@ -78,7 +78,7 @@ public class CheckoutSessionTests {
 	@Test
 	public void testGetItems() {
 		SKU skuItem = new SKU(TestConstants.SKU_ITEM_NAME_A, TestConstants.SKU_ITEM_A_UNIT_PRICE);
-		checkoutSession = new CheckoutSession();
+		checkoutSession = new CheckoutSession(1);
 		checkoutSession.addItem(skuItem);
 
 		HashMap<SKU, Integer> items = (HashMap<SKU, Integer>)checkoutSession.getItems();
@@ -88,7 +88,7 @@ public class CheckoutSessionTests {
 
 	@Test
 	public void testGetTotalCost() {
-		checkoutSession = new CheckoutSession();
+		checkoutSession = new CheckoutSession(1);
 		checkoutSession.addItem(new SKU(TestConstants.SKU_ITEM_NAME_A, TestConstants.SKU_ITEM_A_UNIT_PRICE));
 
 		assertThat(checkoutSession.getTotalCost(), is(TestConstants.SKU_ITEM_A_UNIT_PRICE));
@@ -96,20 +96,20 @@ public class CheckoutSessionTests {
 
 	@Test
 	public void testIsActiveFalse() {
-		checkoutSession = new CheckoutSession();
+		checkoutSession = new CheckoutSession(1);
 		assertThat(checkoutSession.isActive(), is(false));
 	}
 
 	@Test
 	public void testIsActiveTrue() {
-		checkoutSession = new CheckoutSession();
+		checkoutSession = new CheckoutSession(1);
 		checkoutSession.addItem(new SKU(TestConstants.SKU_ITEM_NAME_A, TestConstants.SKU_ITEM_A_UNIT_PRICE));
 		assertThat(checkoutSession.isActive(), is(true));
 	}
 
 	@Test
 	public void testReset() {
-		checkoutSession = new CheckoutSession();		
+		checkoutSession = new CheckoutSession(1);		
 		checkoutSession.addItem(new SKU(TestConstants.SKU_ITEM_NAME_A, TestConstants.SKU_ITEM_A_UNIT_PRICE));
 		assertThat(checkoutSession.isActive(), is(true));
 		
